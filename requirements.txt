@@ -1,0 +1,11 @@
+Flask
+Flask_Cors
+langchain
+openai
+python-dotenv
+unstructured
+gunicorn
+faiss-cpu
+tiktoken
+python-magic
+
