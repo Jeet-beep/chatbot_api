@@ -1,5 +1,4 @@
 from dotenv import load_dotenv
-
 load_dotenv()
 from flask import Flask, request, jsonify
 from langchain.document_loaders import UnstructuredURLLoader
@@ -18,7 +17,6 @@ from langchain.chat_models import ChatOpenAI
 from langchain.llms import OpenAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.callbacks import get_openai_callback
-from openai import ChatCompletion
 
 app = Flask(__name__)
 
@@ -28,6 +26,7 @@ OPEN_AI_KEY = os.getenv('OPENAI_API_KEY')
 
 def chatbot():
     try:
+            print(OPEN_AI_KEY)
             data = request.get_json()
             query = data['query']
             
@@ -45,20 +44,19 @@ def chatbot():
                     document_text= document_text+i.page_content.decode('utf-8')
                 else:
                     document_text+=i.page_content
-            from langchain.text_splitter import CharacterTextSplitter
+            
 
             text_splitter=CharacterTextSplitter(separator="\n",
                                                 chunk_size=1000,
                                                 chunk_overlap=200,
                                                 length_function=len)
             docs=text_splitter.split_text(document_text)
+            # docs="hello i am charanjeet singh and i study in srm.   "
             embeddings = OpenAIEmbeddings()
             
             db = FAISS.from_texts(docs, embeddings)
             docs_and_scores = db.similarity_search_with_score(query)
             docs= db.similarity_search(query)
-
-            docs_and_scores
 
             text_resp=""
             for i in range (len(docs_and_scores)):
